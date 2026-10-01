@@ -1,89 +1,644 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CHAPCHAP ESPACE PRO</title>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f3f6f5;color:#173b32}
-header{background:#123e32;color:white;padding:24px}
-header h1{margin:0;font-size:25px}
-header p{color:#c8ded5}
-main{max-width:950px;margin:30px auto;padding:15px}
-.card{background:white;padding:25px;border-radius:16px;margin-bottom:18px;box-shadow:0 4px 15px #0000000c}
-h2{margin-top:0}
-input,select{width:100%;padding:14px;margin:8px 0 16px;border:1px solid #ddd;border-radius:9px;font-size:16px}
-button{background:#16845f;color:white;border:0;padding:14px 20px;border-radius:9px;font-size:16px;cursor:pointer}
-button:hover{background:#106849}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.stat{background:#e8f4ed;padding:18px;border-radius:12px}
-.stat strong{font-size:25px;display:block;margin-top:8px}
-.hidden{display:none}
-footer{text-align:center;color:#777;padding:25px}
-@media(max-width:600px){.stats{grid-template-columns:1fr}}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f3f6f5;
+    color:#173b32;
+}
+
+header{
+    background:#123e32;
+    color:white;
+    padding:24px;
+}
+
+header h1{
+    margin:0;
+    font-size:26px;
+}
+
+header p{
+    color:#c8ded5;
+    margin-bottom:0;
+}
+
+main{
+    max-width:1100px;
+    margin:30px auto;
+    padding:15px;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:16px;
+    margin-bottom:18px;
+    box-shadow:0 4px 15px #0000000c;
+}
+
+h2{
+    margin-top:0;
+}
+
+input,select{
+    width:100%;
+    padding:14px;
+    margin:8px 0 16px;
+    border:1px solid #ddd;
+    border-radius:9px;
+    font-size:16px;
+}
+
+button{
+    background:#16845f;
+    color:white;
+    border:0;
+    padding:13px 18px;
+    border-radius:9px;
+    font-size:15px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#106849;
+}
+
+.hidden{
+    display:none;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-bottom:20px;
+}
+
+.stat{
+    background:#e8f4ed;
+    padding:18px;
+    border-radius:12px;
+}
+
+.stat strong{
+    font-size:25px;
+    display:block;
+    margin-top:8px;
+}
+
+.modules{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+}
+
+.module{
+    background:white;
+    border-radius:15px;
+    padding:22px;
+    box-shadow:0 4px 15px #0000000c;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.module:hover{
+    transform:translateY(-3px);
+}
+
+.module .icon{
+    font-size:32px;
+    margin-bottom:10px;
+}
+
+.module h3{
+    margin:5px 0;
+}
+
+.module p{
+    color:#687873;
+    font-size:14px;
+}
+
+.finance-box{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+}
+
+.finance-item{
+    background:#f1f7f4;
+    padding:18px;
+    border-radius:12px;
+}
+
+.finance-item strong{
+    display:block;
+    font-size:23px;
+    margin-top:8px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+th,td{
+    text-align:left;
+    padding:12px;
+    border-bottom:1px solid #eee;
+}
+
+th{
+    background:#f1f5f3;
+}
+
+.low-stock{
+    color:#b04a28;
+    font-weight:bold;
+}
+
+.back{
+    background:#555;
+    margin-bottom:15px;
+}
+
+footer{
+    text-align:center;
+    color:#777;
+    padding:25px;
+}
+
+@media(max-width:800px){
+    .modules{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .finance-box{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:600px){
+    .stats,
+    .modules,
+    .finance-box{
+        grid-template-columns:1fr;
+    }
+}
 </style>
 </head>
+
 <body>
+
 <header>
-<h1>CHAPCHAP NETTOYAGE</h1>
-<p>ESPACE PROFESSIONNEL</p>
+    <h1>CHAPCHAP NETTOYAGE</h1>
+    <p>ESPACE PROFESSIONNEL</p>
 </header>
+
 <main>
+
+<!-- CONNEXION -->
+
 <section class="card" id="login">
-<h2>Bienvenue dans votre espace</h2>
-<p>Connectez-vous pour accéder à votre activité.</p>
-<label>Adresse e-mail</label>
-<input id="email" type="email" placeholder="Votre adresse e-mail">
-<label>Votre fonction</label>
-<select id="role">
-<option value="directeur">Directeur</option>
-<option value="agent">Agent de nettoyage</option>
-<option value="commercial">Commercial</option>
-</select>
-<button onclick="connexion()">Accéder à l’espace</button>
-<p id="message"></p>
+
+    <h2>Bienvenue dans votre espace</h2>
+
+    <p>Connectez-vous pour accéder à votre activité.</p>
+
+    <label>Adresse e-mail</label>
+
+    <input
+        id="email"
+        type="email"
+        placeholder="Votre adresse e-mail"
+    >
+
+    <label>Votre fonction</label>
+
+    <select id="role">
+        <option value="Directeur">Directeur</option>
+        <option value="Agent de nettoyage">Agent de nettoyage</option>
+        <option value="Commercial">Commercial</option>
+    </select>
+
+    <button onclick="connexion()">
+        Accéder à l’espace
+    </button>
+
+    <p id="message"></p>
+
 </section>
 
+
+<!-- TABLEAU DE BORD -->
+
 <section class="hidden" id="dashboard">
-<div class="card">
-<h2 id="bonjour">Tableau de bord</h2>
-<p>Bienvenue dans CHAPCHAP ESPACE PRO.</p>
-</div>
-<div class="stats">
-<div class="stat">Missions<strong>0</strong></div>
-<div class="stat">Clients<strong>0</strong></div>
-<div class="stat">Interventions<strong>0</strong></div>
-</div>
-<div class="card">
-<h2>Gestion de l’activité</h2>
-<p>Planning des interventions</p>
-<p>Suivi des agents</p>
-<p>Gestion des clients et prospects</p>
-<p>Suivi des missions</p>
-<p>Rapports d’activité</p>
-</div>
-<button onclick="deconnexion()">Se déconnecter</button>
+
+    <div class="card">
+
+        <h2 id="bonjour">Tableau de bord</h2>
+
+        <p>
+            Bienvenue dans votre espace professionnel CHAPCHAP.
+        </p>
+
+    </div>
+
+
+    <div class="stats">
+
+        <div class="stat">
+            Missions
+            <strong>0</strong>
+        </div>
+
+        <div class="stat">
+            Clients
+            <strong>0</strong>
+        </div>
+
+        <div class="stat">
+            Interventions
+            <strong>0</strong>
+        </div>
+
+    </div>
+
+
+    <!-- MODULES -->
+
+    <div class="modules">
+
+        <div class="module" onclick="ouvrir('agents')">
+            <div class="icon">👥</div>
+            <h3>Agents</h3>
+            <p>Gérer les agents</p>
+        </div>
+
+        <div class="module" onclick="ouvrir('clients')">
+            <div class="icon">🏢</div>
+            <h3>Clients</h3>
+            <p>Gérer les clients</p>
+        </div>
+
+        <div class="module" onclick="ouvrir('missions')">
+            <div class="icon">🧹</div>
+            <h3>Missions</h3>
+            <p>Gérer les interventions</p>
+        </div>
+
+        <div class="module" onclick="ouvrir('planning')">
+            <div class="icon">📅</div>
+            <h3>Planning</h3>
+            <p>Organiser les interventions</p>
+        </div>
+
+        <div class="module" onclick="ouvrir('rapports')">
+            <div class="icon">📊</div>
+            <h3>Rapports</h3>
+            <p>Suivre l'activité</p>
+        </div>
+
+        <div class="module" onclick="ouvrir('finance')">
+            <div class="icon">💰</div>
+            <h3>Finance</h3>
+            <p>Gérer les finances</p>
+        </div>
+
+        <div class="module" onclick="ouvrir('inventaire')">
+            <div class="icon">📦</div>
+            <h3>Inventaire</h3>
+            <p>Gérer le matériel et les stocks</p>
+        </div>
+
+        <div class="module" onclick="ouvrir('parametres')">
+            <div class="icon">⚙️</div>
+            <h3>Paramètres</h3>
+            <p>Paramètres de la société</p>
+        </div>
+
+    </div>
+
+
+    <br>
+
+    <button onclick="deconnexion()">
+        Se déconnecter
+    </button>
+
 </section>
+
+
+<!-- FINANCE -->
+
+<section class="card hidden" id="finance">
+
+    <button class="back" onclick="retourDashboard()">
+        ← Retour au tableau de bord
+    </button>
+
+    <h2>💰 Gestion financière</h2>
+
+    <p>
+        Suivi financier de CHAPCHAP NETTOYAGE.
+    </p>
+
+    <div class="finance-box">
+
+        <div class="finance-item">
+            Chiffre d'affaires
+            <strong>0 €</strong>
+        </div>
+
+        <div class="finance-item">
+            Dépenses
+            <strong>0 €</strong>
+        </div>
+
+        <div class="finance-item">
+            Factures en attente
+            <strong>0 €</strong>
+        </div>
+
+        <div class="finance-item">
+            Trésorerie
+            <strong>0 €</strong>
+        </div>
+
+    </div>
+
+    <br>
+
+    <h3>Opérations financières</h3>
+
+    <table>
+
+        <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Type</th>
+            <th>Montant</th>
+        </tr>
+
+        <tr>
+            <td>-</td>
+            <td>Aucune opération</td>
+            <td>-</td>
+            <td>0 €</td>
+        </tr>
+
+    </table>
+
+    <br>
+
+    <button onclick="alert('La création d’une opération sera connectée à la base de données dans la prochaine étape.')">
+        + Ajouter une opération
+    </button>
+
+</section>
+
+
+<!-- INVENTAIRE -->
+
+<section class="card hidden" id="inventaire">
+
+    <button class="back" onclick="retourDashboard()">
+        ← Retour au tableau de bord
+    </button>
+
+    <h2>📦 Inventaire et matériel</h2>
+
+    <p>
+        Gestion des produits, consommables et équipements.
+    </p>
+
+    <table>
+
+        <tr>
+            <th>Matériel / Produit</th>
+            <th>Catégorie</th>
+            <th>Quantité</th>
+            <th>Stock minimum</th>
+            <th>État</th>
+        </tr>
+
+        <tr>
+            <td>Produit nettoyant</td>
+            <td>Consommable</td>
+            <td>0</td>
+            <td>10</td>
+            <td class="low-stock">Stock faible</td>
+        </tr>
+
+        <tr>
+            <td>Gants</td>
+            <td>Protection</td>
+            <td>0</td>
+            <td>20</td>
+            <td class="low-stock">Stock faible</td>
+        </tr>
+
+        <tr>
+            <td>Aspirateur</td>
+            <td>Équipement</td>
+            <td>0</td>
+            <td>1</td>
+            <td>À définir</td>
+        </tr>
+
+    </table>
+
+    <br>
+
+    <button onclick="alert('L’ajout de matériel sera connecté à la base de données dans la prochaine étape.')">
+        + Ajouter du matériel
+    </button>
+
+</section>
+
+
+<!-- AUTRES SECTIONS -->
+
+<section class="card hidden" id="agents">
+
+    <button class="back" onclick="retourDashboard()">← Retour</button>
+
+    <h2>👥 Gestion des agents</h2>
+
+    <p>
+        Cette section permettra de gérer les agents de nettoyage,
+        leurs informations et leurs missions.
+    </p>
+
+</section>
+
+
+<section class="card hidden" id="clients">
+
+    <button class="back" onclick="retourDashboard()">← Retour</button>
+
+    <h2>🏢 Gestion des clients</h2>
+
+    <p>
+        Cette section permettra de gérer les clients et leurs contrats.
+    </p>
+
+</section>
+
+
+<section class="card hidden" id="missions">
+
+    <button class="back" onclick="retourDashboard()">← Retour</button>
+
+    <h2>🧹 Gestion des missions</h2>
+
+    <p>
+        Cette section permettra de créer et suivre les interventions.
+    </p>
+
+</section>
+
+
+<section class="card hidden" id="planning">
+
+    <button class="back" onclick="retourDashboard()">← Retour</button>
+
+    <h2>📅 Planning</h2>
+
+    <p>
+        Le calendrier des interventions sera ajouté ici.
+    </p>
+
+</section>
+
+
+<section class="card hidden" id="rapports">
+
+    <button class="back" onclick="retourDashboard()">← Retour</button>
+
+    <h2>📊 Rapports</h2>
+
+    <p>
+        Les rapports d'activité seront disponibles ici.
+    </p>
+
+</section>
+
+
+<section class="card hidden" id="parametres">
+
+    <button class="back" onclick="retourDashboard()">← Retour</button>
+
+    <h2>⚙️ Paramètres</h2>
+
+    <p>
+        Les paramètres de la société et des utilisateurs seront disponibles ici.
+    </p>
+
+</section>
+
 </main>
-<footer>© CHAPCHAP NETTOYAGE — Espace professionnel</footer>
+
+
+<footer>
+    © CHAPCHAP NETTOYAGE — Espace professionnel
+</footer>
+
+
 <script>
+
 function connexion(){
-const email=document.getElementById('email').value;
-const role=document.getElementById('role').value;
-if(!email.includes('@')){
-document.getElementById('message').textContent="Veuillez saisir une adresse e-mail valide.";
-return;
+
+    const email =
+        document.getElementById("email").value;
+
+    const role =
+        document.getElementById("role").value;
+
+    if(!email.includes("@")){
+
+        document.getElementById("message").textContent =
+        "Veuillez saisir une adresse e-mail valide.";
+
+        return;
+    }
+
+    document.getElementById("login")
+        .classList.add("hidden");
+
+    document.getElementById("dashboard")
+        .classList.remove("hidden");
+
+    document.getElementById("bonjour")
+        .textContent =
+        "Bonjour — " + role;
 }
-document.getElementById('login').classList.add('hidden');
-document.getElementById('dashboard').classList.remove('hidden');
-document.getElementById('bonjour').textContent="Bonjour — "+role;
-}
+
+
 function deconnexion(){
-document.getElementById('dashboard').classList.add('hidden');
-document.getElementById('login').classList.remove('hidden');
+
+    document.getElementById("dashboard")
+        .classList.add("hidden");
+
+    document.getElementById("login")
+        .classList.remove("hidden");
+
+    document.getElementById("email")
+        .value = "";
 }
+
+
+function ouvrir(section){
+
+    document.getElementById("dashboard")
+        .classList.add("hidden");
+
+    document.querySelectorAll("section.card")
+        .forEach(function(element){
+
+            if(
+                element.id !== "login" &&
+                element.id !== "dashboard"
+            ){
+                element.classList.add("hidden");
+            }
+
+        });
+
+    document.getElementById(section)
+        .classList.remove("hidden");
+}
+
+
+function retourDashboard(){
+
+    document.querySelectorAll("section.card")
+        .forEach(function(element){
+
+            if(
+                element.id !== "login" &&
+                element.id !== "dashboard"
+            ){
+                element.classList.add("hidden");
+            }
+
+        });
+
+    document.getElementById("dashboard")
+        .classList.remove("hidden");
+}
+
 </script>
+
 </body>
 </html>
