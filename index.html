@@ -460,7 +460,7 @@ footer{
 
     <br>
 
-    <button onclick="alert('L’ajout de matériel sera connecté à la base de données dans la prochaine étape.')">
+    <button onclick="ajoutermateriel()">
         + Ajouter du matériel
     </button>
 
@@ -648,7 +648,31 @@ function retourDashboard(){
   const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_PUBLISHABLE_KEY
-  );
+  async function ajouterMateriel() {
+    const nom = prompt("Nom du matériel :");
+    if (!nom) return;
+
+    const quantite = prompt("Quantité :");
+    if (!quantite) return;
+
+    const prix = prompt("Prix :");
+    if (!prix) return;
+
+    const { error } = await supabaseClient
+        .from("materiel")
+        .insert([{
+            nom: nom,
+            quantite: Number(quantite),
+            prix: Number(prix)
+        }]);
+
+    if (error) {
+        alert("Erreur lors de l'ajout : " + error.message);
+        return;
+    }
+
+    alert("Matériel ajouté avec succès !");
+);
 </script>
 </body>
 </html>
