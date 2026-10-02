@@ -652,8 +652,8 @@ function retourDashboard(){
     };
     try {
       const { data, error } = await obtenirClient()
-        .from("materiel")
-        .select("nom, quantite, prix")
+        .from("inventaire")
+        .select("nom, categorie, quantite")
         .order("nom", { ascending: true });
       if (error) throw error;
       if (!data || !data.length) {
@@ -674,31 +674,63 @@ function retourDashboard(){
     }
   }
 
-  async function ajouterMateriel() {
-    const nom = prompt("Nom du matériel :");
-    if (nom === null || !nom.trim()) return;
-    const quantite = prompt("Quantité :");
-    if (quantite === null || !quantite.trim()) return;
-    const prix = prompt("Prix unitaire (€) :");
-    if (prix === null || !prix.trim()) return;
-    const qte = Number(quantite);
-    const montant = Number(prix.replace(",", "."));
-    if (!Number.isInteger(qte) || qte <= 0 || !Number.isFinite(montant) || montant < 0) {
-      alert("Saisis une quantité entière positive et un prix valide.");
+ 
+async function ajouterMateriel() {
+  const nom = prompt("Nom du matériel :");
+  if (!nom || !nom.trim()) return;
+
+  const categorie = prompt("Catégorie :");
+  if (!categorie || !categorie.trim()) return;
+
+  const quantite = prompt("Quantité :");
+  if (quantite === null || quantite.trim() === "") return;
+
+  const prix = prompt("Prix d'achat (€) :");
+  if (prix === null || prix.trim() === "") return;
+
+  const qte = Number(quantite);
+  const montant = Number(prix.replace(",", "."));
+
+  if (!Number.isFinite(qte) || qte < 0 ||
+      !Number.isFinite(montant) || montant < 0) {
+    alert("Quantité ou prix invalide.");
+    return;
+  }
+
+  try {
+    const client = obtenirClient();
+
+    const { data: { user }, error: authError } =
+      await client.auth.getUser();
+
+    if (authError) throw authError;
+
+    if (!user) {
+      alert("Connecte-toi avec ton compte Supabase.");
       return;
     }
-    try {
-      const { error } = await obtenirClient().from("materiel").insert([{
-        nom: nom.trim(), quantite: qte, prix: montant
+
+    const { error } = await client
+      .from("inventaire")
+      .insert([{
+        nom: nom.trim(),
+        categorie: categorie.trim(),
+        quantite: qte,
+        prix_achat: montant,
+        user_id: user.id
       }]);
-      if (error) throw error;
-      alert("Matériel ajouté avec succès !");
-      await chargerMateriel();
-    } catch (error) {
-      console.error("Ajout du matériel :", error);
-      alert("Impossible d'ajouter le matériel : " + error.message);
-    }
+
+    if (error) throw error;
+
+    alert("Matériel ajouté avec succès !");
+    await chargerMateriel();
+
+  } catch (error) {
+    console.error(error);
+    alert("Erreur : " + error.message);
   }
+}
+
 
 </script>
 </body>
