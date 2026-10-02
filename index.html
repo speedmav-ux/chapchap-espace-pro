@@ -691,7 +691,15 @@ function retourDashboard(){
       for (const item of data) {
         const ligne = tbody.insertRow();
         // La table actuelle ne contient pas de colonnes catégorie / stock minimum.
-        const valeurs = [item.nom, "—", item.quantite, "—", "Enregistré"];
+        
+const valeurs = [
+    item.nom,
+    item.categorie || "—",
+    item.quantite,
+    "—",
+    "Enregistré"
+];
+
         for (const valeur of valeurs) {
           ligne.insertCell().textContent = valeur == null ? "—" : String(valeur);
         }
