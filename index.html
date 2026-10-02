@@ -231,6 +231,14 @@ footer{
         <option value="Commercial">Commercial</option>
     </select>
 
+<label for="password">Mot de passe</label>
+<input
+  id="password"
+  type="password"
+  placeholder="Votre mot de passe"
+  autocomplete="current-password"
+>
+
     <button onclick="connexion()">
         Accéder à l’espace
     </button>
@@ -535,32 +543,52 @@ footer{
 
 <script>
 
-function connexion(){
 
-    const email =
-        document.getElementById("email").value;
+async function connexion() {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const message = document.getElementById("message");
 
-    const role =
-        document.getElementById("role").value;
+  message.textContent = "";
 
-    if(!email.includes("@")){
+  if (!email || !password) {
+    message.textContent =
+      "Saisissez votre e-mail et votre mot de passe.";
+    return;
+  }
 
-        document.getElementById("message").textContent =
-        "Veuillez saisir une adresse e-mail valide.";
+  try {
+    const client = obtenirClient();
 
-        return;
+    const { data, error } =
+      await client.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+    if (error) throw error;
+
+    if (!data.user) {
+      throw new Error("Connexion impossible.");
     }
 
     document.getElementById("login")
-        .classList.add("hidden");
+      .classList.add("hidden");
 
     document.getElementById("dashboard")
-        .classList.remove("hidden");
+      .classList.remove("hidden");
 
     document.getElementById("bonjour")
-        .textContent =
-        "Bonjour — " + role;
+      .textContent = "Bienvenue dans CHAPCHAP ESPACE PRO";
+
+    document.getElementById("password").value = "";
+
+  } catch (error) {
+    message.textContent =
+      "Connexion impossible : " + error.message;
+  }
 }
+
 
 
 function deconnexion(){
