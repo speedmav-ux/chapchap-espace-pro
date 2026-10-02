@@ -432,29 +432,7 @@ footer{
             <th>État</th>
         </tr>
 
-        <tr>
-            <td>Produit nettoyant</td>
-            <td>Consommable</td>
-            <td>0</td>
-            <td>10</td>
-            <td class="low-stock">Stock faible</td>
-        </tr>
-
-        <tr>
-            <td>Gants</td>
-            <td>Protection</td>
-            <td>0</td>
-            <td>20</td>
-            <td class="low-stock">Stock faible</td>
-        </tr>
-
-        <tr>
-            <td>Aspirateur</td>
-            <td>Équipement</td>
-            <td>0</td>
-            <td>1</td>
-            <td>À définir</td>
-        </tr>
+        <tbody id="materiel-lignes"><tr><td colspan="5">Chargement de l’inventaire…</td></tr></tbody>
 
     </table>
 
@@ -617,6 +595,8 @@ function ouvrir(section){
 
     document.getElementById(section)
         .classList.remove("hidden");
+
+    if (section === "inventaire") chargerMateriel();
 }
 
 
@@ -643,53 +623,82 @@ function retourDashboard(){
 
 <script>
   const SUPABASE_URL = "https://eseakowbwrakcmkvaci.supabase.co";
+  // Remplacer par la clé publique (publishable ou anon) du projet Supabase.
+  // Ne jamais mettre la clé service_role dans un site public.
   const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_......";
+  let supabaseClient = null;
 
-  const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
-
-async function ajouterMateriel() {
-  const nom = prompt("Nom du matériel :");
-  if (!nom || !nom.trim()) return;
-
-  const quantite = prompt("Quantité :");
-  if (quantite === null || quantite.trim() === "") return;
-
-  const prix = prompt("Prix unitaire (€) :");
-  if (prix === null || prix.trim() === "") return;
-
-  const qte = Number(quantite);
-  const montant = Number(prix);
-
-  if (!Number.isInteger(qte) || qte <= 0 ||
-      !Number.isFinite(montant) || montant < 0) {
-    alert("Veuillez saisir une quantité et un prix valides.");
-    return;
-  }
-
-  try {
-    const { error } = await supabaseClient
-      .from("materiel")
-      .insert([{
-        nom: nom.trim(),
-        quantite: qte,
-        prix: montant
-      }]);
-
-    if (error) throw error;
-
-    alert("Matériel ajouté avec succès !");
-
-    if (typeof chargerMateriel === "function") {
-      await chargerMateriel();
+  function obtenirClient() {
+    if (SUPABASE_PUBLISHABLE_KEY.includes("......")) {
+      throw new Error("Configure ta clé publique Supabase dans index.html.");
     }
-
-  } catch (error) {
-    console.error("Erreur Supabase :", error);
-    alert("Erreur lors de l'ajout : " + error.message);
+    if (!window.supabase) {
+      throw new Error("La bibliothèque Supabase n'a pas pu être chargée.");
+    }
+    if (!supabaseClient) {
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+    }
+    return supabaseClient;
   }
-}
+
+  async function chargerMateriel() {
+    const tbody = document.getElementById("materiel-lignes");
+    tbody.replaceChildren();
+    const afficherMessage = (message) => {
+      const ligne = tbody.insertRow();
+      const cellule = ligne.insertCell();
+      cellule.colSpan = 5;
+      cellule.textContent = message;
+    };
+    try {
+      const { data, error } = await obtenirClient()
+        .from("materiel")
+        .select("nom, quantite, prix")
+        .order("nom", { ascending: true });
+      if (error) throw error;
+      if (!data || !data.length) {
+        afficherMessage("Aucun matériel enregistré.");
+        return;
+      }
+      for (const item of data) {
+        const ligne = tbody.insertRow();
+        // La table actuelle ne contient pas de colonnes catégorie / stock minimum.
+        const valeurs = [item.nom, "—", item.quantite, "—", "Enregistré"];
+        for (const valeur of valeurs) {
+          ligne.insertCell().textContent = valeur == null ? "—" : String(valeur);
+        }
+      }
+    } catch (error) {
+      console.error("Chargement de l'inventaire :", error);
+      afficherMessage("Impossible de charger l'inventaire : " + error.message);
+    }
+  }
+
+  async function ajouterMateriel() {
+    const nom = prompt("Nom du matériel :");
+    if (nom === null || !nom.trim()) return;
+    const quantite = prompt("Quantité :");
+    if (quantite === null || !quantite.trim()) return;
+    const prix = prompt("Prix unitaire (€) :");
+    if (prix === null || !prix.trim()) return;
+    const qte = Number(quantite);
+    const montant = Number(prix.replace(",", "."));
+    if (!Number.isInteger(qte) || qte <= 0 || !Number.isFinite(montant) || montant < 0) {
+      alert("Saisis une quantité entière positive et un prix valide.");
+      return;
+    }
+    try {
+      const { error } = await obtenirClient().from("materiel").insert([{
+        nom: nom.trim(), quantite: qte, prix: montant
+      }]);
+      if (error) throw error;
+      alert("Matériel ajouté avec succès !");
+      await chargerMateriel();
+    } catch (error) {
+      console.error("Ajout du matériel :", error);
+      alert("Impossible d'ajouter le matériel : " + error.message);
+    }
+  }
 
 </script>
 </body>
