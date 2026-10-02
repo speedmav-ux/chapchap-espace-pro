@@ -648,32 +648,49 @@ function retourDashboard(){
   const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_PUBLISHABLE_KEY
-  async function ajouterMateriel() {
-    alert("Le bouton Ajouter du materiel fonction !");
-}
-    if (!nom) return;
 
-    const quantite = prompt("Quantité :");
-    if (!quantite) return;
+async function ajouterMateriel() {
+  const nom = prompt("Nom du matériel :");
+  if (!nom || !nom.trim()) return;
 
-    const prix = prompt("Prix :");
-    if (!prix) return;
+  const quantite = prompt("Quantité :");
+  if (quantite === null || quantite.trim() === "") return;
 
+  const prix = prompt("Prix unitaire (€) :");
+  if (prix === null || prix.trim() === "") return;
+
+  const qte = Number(quantite);
+  const montant = Number(prix);
+
+  if (!Number.isInteger(qte) || qte <= 0 ||
+      !Number.isFinite(montant) || montant < 0) {
+    alert("Veuillez saisir une quantité et un prix valides.");
+    return;
+  }
+
+  try {
     const { error } = await supabaseClient
-        .from("materiel")
-        .insert([{
-            nom: nom,
-            quantite: Number(quantite),
-            prix: Number(prix)
-        }]);
+      .from("materiel")
+      .insert([{
+        nom: nom.trim(),
+        quantite: qte,
+        prix: montant
+      }]);
 
-    if (error) {
-        alert("Erreur lors de l'ajout : " + error.message);
-        return;
-    }
+    if (error) throw error;
 
     alert("Matériel ajouté avec succès !");
-);
+
+    if (typeof chargerMateriel === "function") {
+      await chargerMateriel();
+    }
+
+  } catch (error) {
+    console.error("Erreur Supabase :", error);
+    alert("Erreur lors de l'ajout : " + error.message);
+  }
+}
+
 </script>
 </body>
 </html>
